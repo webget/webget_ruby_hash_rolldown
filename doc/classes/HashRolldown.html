@@ -1,0 +1,175 @@
+
+<html><head>
+  <title>Module: HashRolldown</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript" language="JavaScript">
+  <!--
+  function popCode(url) {
+    parent.frames.source.location = url
+  }
+  //-->
+  </script>
+</head>
+<body bgcolor="white">
+
+
+<table width="100%" border="0" cellspacing="0">
+ <tr class="title-row">
+ <td class="big-title-font">
+   <font size="-3"><b>Module</b><br /></font>HashRolldown
+ </td>
+ <td align="right">
+   <table cellspacing="0" cellpadding="2">
+     <tr valign="top">
+      <td class="small-title-font">In:</td>
+      <td class="small-title-font">
+<a href="../files/lib/hash_rolldown_rb.html">lib/hash_rolldown.rb</a>
+      </td>
+     </tr>
+   </table>
+  </td>
+  </tr>
+</table><br />
+  <!-- banner header -->
+
+
+<div class="indent">
+<div class="description">
+<h1><a href="HashRolldown.html">HashRolldown</a></h1>
+<table>
+<tr><td valign="top">Author:</td><td>Joel Parker Henderson, joelparkerhenderson@gmail.com
+
+</td></tr>
+<tr><td valign="top">Copyright:</td><td>Copyright (c) 2007-2009 Joel Parker Henderson
+
+</td></tr>
+<tr><td valign="top">License:</td><td>CreativeCommons License, Non-commercial Share Alike
+
+</td></tr>
+<tr><td valign="top">License:</td><td>LGPL, GNU Lesser General Public License
+
+</td></tr>
+</table>
+<p>
+<a href="HashRolldown.html">HashRolldown</a> aggregates value for a hash of
+hashes, for example to help calculate subtotals grouped by key.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  h=Hash.new
+  h['a']=Hash.new
+  h['b']=Hash.new
+  h['c']=Hash.new
+  h['a']['x']=1
+  h['a']['y']=2
+  h['a']['z']=3
+  h['b']['x']=4
+  h['b']['y']=5
+  h['b']['z']=6
+  h['c']['x']=7
+  h['c']['y']=8
+  h['c']['z']=9
+  h.rolldown =&gt; {&quot;x&quot;=&gt;[1,4,7],&quot;y&quot;=&gt;[2,5,8],&quot;z&quot;=&gt;[3,6,9]}
+</pre>
+<h1>Calculating subtotals</h1>
+<p>
+The <a href="HashRolldown.html#M000004">rolldown</a> method is especially
+useful for calculating subtotals by key.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  r=h.rolldown
+  r['x'].sum =&gt; 12
+  r['y'].sum =&gt; 15
+  r['z'].sum =&gt; 18
+</pre>
+<h1>Block customization</h1>
+<p>
+You can provide a block that will be called for the <a
+href="HashRolldown.html#M000004">rolldown</a> items.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  h.rolldown{|items| items.max } =&gt; {&quot;a&quot;=&gt;7,&quot;b&quot;=&gt;8,&quot;c&quot;=&gt;9}
+  h.rolldown{|items| items.join(&quot;-&quot;) } =&gt; {&quot;a&quot;=&gt;&quot;1-4-7&quot;,&quot;b&quot;=&gt;&quot;2-5-8&quot;,&quot;c&quot;=&gt;&quot;3-6-9&quot;}
+  h.rolldown{|items| items.inject{|sum,x| sum+=x } } =&gt; {&quot;a&quot;=&gt;12,&quot;b&quot;=&gt;15,&quot;c&quot;=&gt;18}
+</pre>
+
+</div>
+</div>
+
+
+
+<div class="indent">
+<div class="methods">
+<table class="tablemethods" cellpadding="5" width="100%">
+<tr><td class="tablesubtitle">Methods</td></tr>
+</table>
+<div class="name-list">
+<ul>
+<li><a href="#M000004">rolldown</a>
+</ul>
+</div>
+</div>
+</div>
+
+
+    <div class="indent">
+    <div id="section">
+
+
+
+  
+
+<!--IF:method_list-->
+<div class="method_list">
+<!--START:method_list-->
+<!--IF:methods -->
+<h2>Public Instance methods</h2>
+<div class="methods">
+<!--START:methods-->
+<h2 class="methodname"><a name="M000004">
+
+ <b>rolldown</b>() {|v)| ...}
+</a>
+</h2>
+
+<!--IF:sourcecode -->
+<div class="sourcecode">
+<h2>Source Code</h2>
+<pre>
+    <span class="ruby-comment cmt"># File lib/hash_rolldown.rb, line 50</span>
+50:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rolldown</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">b</span>)
+51:     <span class="ruby-identifier">a</span>=<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>
+52:     <span class="ruby-identifier">each_pair</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k1</span>,<span class="ruby-identifier">v1</span><span class="ruby-operator">|</span>
+53:       <span class="ruby-identifier">v1</span>.<span class="ruby-identifier">each_pair</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k2</span>,<span class="ruby-identifier">v2</span><span class="ruby-operator">|</span>
+54:         <span class="ruby-identifier">a</span>[<span class="ruby-identifier">k2</span>]=[] <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">a</span>[<span class="ruby-identifier">k2</span>]<span class="ruby-operator">==</span><span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">a</span>[<span class="ruby-identifier">k2</span>]<span class="ruby-operator">==</span>{})
+55:         <span class="ruby-identifier">a</span>[<span class="ruby-identifier">k2</span>]<span class="ruby-operator">&lt;&lt;</span>(<span class="ruby-identifier">v2</span>)
+56:       }
+57:     }
+58:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span> 
+59:       <span class="ruby-identifier">a</span>.<span class="ruby-identifier">each_pair</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span>[<span class="ruby-identifier">k</span>]=(<span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">v</span>)}
+60:     <span class="ruby-keyword kw">end</span>
+61:     <span class="ruby-identifier">a</span>
+62:   <span class="ruby-keyword kw">end</span>
+</pre>
+</div><!--sourcecode-->
+<!-- ENDIF:sourcecode-->
+<!-- END methods -->
+</div><!--methods-->
+<!--ENDIF:methods-->
+</div><!-- END method_list -->
+</div><!-- ENDIF method_list -->
+  <!-- method descriptions -->
+
+
+</div><!-- indent -->
+</body>
+</html>
